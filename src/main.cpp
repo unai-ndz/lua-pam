@@ -3,6 +3,15 @@
 #include <security/pam_misc.h>
 #include <pwd.h>
 
+#ifndef luaL_newlibtable
+#  define luaL_newlibtable(L, l) \
+  (lua_createtable((L), 0, sizeof((l))/sizeof(*(l))-1))
+#endif
+#ifndef luaL_newlib
+#  define luaL_newlib(L, l) \
+  (luaL_newlibtable((L), (l)), luaL_register((L), NULL, (l)))
+#endif
+
 struct pam_response *reply;
 
 int simple_conversation(int num_msg, const struct pam_message **msg, struct pam_response **resp, void *appdata_ptr) {
